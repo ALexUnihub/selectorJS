@@ -75,9 +75,13 @@ h1,h2,h3,h4,h5,h6,p,td,tr {
 
 .custom__select__options {
 	display: none;
+
+	transition: all 0.5s;
+	-webkit-transition: all .5s;
+
 	box-sizing: border-box;
 	position: absolute;
-	top: 48px;
+	top: 44px;
 
 	border: 1px solid #000;
 	border-radius: 4px;
@@ -139,4 +143,14 @@ background-color: rgb(0, 0, 0);
 }
 .custom__select__option:last-child::after {
 	display: none;
+}
+
+
+
+/* test */
+.label__test {
+	display: block;
+}
+.select__block {
+	display: block;
 }

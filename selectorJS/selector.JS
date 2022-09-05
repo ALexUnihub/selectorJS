@@ -1,14 +1,71 @@
-function createSelector() {
-  let wrapper = document.querySelector(".custom__select__wrapper");
-  let optionWrapper = wrapper.querySelector(".custom__select__placeholder");
-  let options = wrapper.querySelectorAll('.custom__select__option');
+function createSelector(searchParam) {
+  initializeSelector(searchParam);
 
-  optionWrapper.addEventListener("click", showOptions);
-  for (let item of options) {
-    item.addEventListener("click", chooseOption);
+  function initializeSelector(searchParam) {
+    let optionsToReplace = document.querySelectorAll(searchParam);
+    let optionsCounter = 0;
+    let optionsContent = [];
+    let label = null;
+
+    for (let item of optionsToReplace) {
+      optionsCounter = 0;
+      for (let subItem of item.childNodes) {
+        if (subItem == '[object HTMLOptionElement]') {
+          optionsCounter++;
+          optionsContent.push(subItem.textContent);
+        }
+      }
+    
+      if (item.previousElementSibling == "[object HTMLLabelElement]") {
+        label = item.previousElementSibling.textContent;
+        item.previousElementSibling.remove();
+      } else {
+        label = null;
+      }
+
+      let wrapper = createCustomOption(optionsContent, label);
+      
+      item.insertAdjacentElement('afterend', wrapper);
+      item.remove();
+    }
+  }
+
+  function createCustomOption(optionsArr, label) {
+    let wrapper = document.createElement('div');
+    let placeholder = document.createElement('div');
+    let options = document.createElement('div');
+
+    wrapper.classList.add("custom__select__wrapper");
+    placeholder.classList.add("custom__select__placeholder");
+    options.classList.add("custom__select__options");
+
+    wrapper.insertAdjacentElement('afterbegin', placeholder);
+    placeholder.insertAdjacentElement('afterend', options);
+
+    placeholder.addEventListener('click', showOptions);
+
+    for (let i = 0; i < optionsArr.length; i++) {
+      let option = document.createElement('div');
+
+      option.classList.add("custom__select__option");
+
+      option.textContent = optionsArr[i];
+      option.addEventListener("click", chooseOption);
+      options.insertAdjacentElement('beforeend', option);
+    }
+
+    if (label) {
+      placeholder.textContent = label;
+    } else {
+      placeholder = "Placeholder";
+    }
+    
+    return wrapper;
   }
 
   function showOptions(event) {
+    let wrapper = document.querySelector(".custom__select__wrapper");
+
     if (event.currentTarget.classList.contains("active")) {
       event.currentTarget.classList.remove("active");
       wrapper.querySelector(".custom__select__options").style.display = "none";
@@ -20,6 +77,8 @@ function createSelector() {
 
   function chooseOption(event) { 
     let newElem = document.createElement('div');
+    let wrapper = document.querySelector(".custom__select__wrapper");
+
     newElem.classList.add('custom__select__placeholder');
     newElem.textContent = event.currentTarget.textContent;
 
