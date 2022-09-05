@@ -57,7 +57,7 @@ function createSelector(searchParam) {
     if (label) {
       placeholder.textContent = label;
     } else {
-      placeholder = "Placeholder";
+      placeholder.textContent = "Placeholder";
     }
     
     return wrapper;
