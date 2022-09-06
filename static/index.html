@@ -29,8 +29,8 @@
 
     </div> -->
 
-    <label for="" class="label__test">SomeLabel</label>
-    <select name="" id="custom-wrapper" class="select__block">
+    <!-- <label for="" class="label__test">SomeLabel</label> -->
+    <select name="" id="custom-wrapper" class="select__block__single">
       <option value="">Option 1</option>
       <option value="">Option 2</option>
       <option value="">Option 3</option>
@@ -43,19 +43,22 @@
   <div class="wrapper">
 
     <label for="" class="label__test">SomeLabel</label>
-    <select name="" id="custom-wrapper" class="select__block">
-      <option value="">Option 1</option>
-      <option value="">Option 2</option>
-      <option value="">Option 3</option>
-      <option value="">Option 4</option>
+    <select name="" id="custom-wrapper" class="select__block__single">
+      <option value="">Option 5</option>
+      <option value="">Option 6</option>
+      <option value="">Option 7</option>
+      <option value="">Option 8</option>
     </select>
 
-    <label for="" class="label__test">SomeLabel</label>
+    <!-- <label for="" class="label__test">SomeLabel</label> -->
     <select name="" id="custom-wrapper" class="select__block">
       <option value="">Option 1</option>
       <option value="">Option 2</option>
       <option value="">Option 3</option>
       <option value="">Option 4</option>
+      <option value="">Option 997</option>
+      <option value="">Option 998</option>
+      <option value="">Option 999</option>
     </select>
 
       
@@ -63,7 +66,8 @@
 
 
   <script>
-    window.createSelector(".select__block");
+    window.createSelector(".select__block__single", "multi= false", "write=true")
+    window.createSelector(".select__block", "multi= true", "write=true");
   </script>
 </body>
 </html>

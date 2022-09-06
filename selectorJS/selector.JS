@@ -1,7 +1,12 @@
-function createSelector(searchParam) {
+// multi=true --> can pick multiple options
+// write=true --> can write in input
+// single mode is default
+
+function createSelector(searchParam, ...params) {
+
   let selectorID = 0;
   // create & replace all select's with 'searchParam' - selector
-  initializeSelector(searchParam);
+  initializeSelector(searchParam, params);
 
   function initializeSelector(searchParam) {
     let optionsToReplace = document.querySelectorAll(searchParam);
@@ -25,14 +30,15 @@ function createSelector(searchParam) {
         label = null;
       }
 
-      let wrapper = createCustomOption(optionsContent, label, selectorID);
+      let wrapper = createCustomOption(optionsContent, label, selectorID, params);
       selectorID++;
       item.insertAdjacentElement('afterend', wrapper);
       item.remove();
+      optionsContent = [];
     }
   }
 
-  function createCustomOption(optionsArr, label, wrapperID) {
+  function createCustomOption(optionsArr, label, wrapperID, params) {
     let wrapper = document.createElement('div');
     let placeholder = document.createElement('div');
     let options = document.createElement('div');
@@ -42,25 +48,36 @@ function createSelector(searchParam) {
     placeholder.classList.add("custom__select__placeholder");
     options.classList.add("custom__select__options");
 
-    wrapper.insertAdjacentElement('afterbegin', placeholder);
-    placeholder.insertAdjacentElement('afterend', options);
+    wrapper.insertAdjacentElement("afterbegin", placeholder);
+    placeholder.insertAdjacentElement("afterend", options);
 
-    placeholder.addEventListener('click', showOptions);
+    placeholder.addEventListener("click", showOptions);
 
     for (let i = 0; i < optionsArr.length; i++) {
-      let option = document.createElement('div');
+      let option = document.createElement("div");
 
       option.classList.add("custom__select__option");
-
+      option.dataset.selected = false;
       option.textContent = optionsArr[i];
-      option.addEventListener("click", chooseOption);
+
+      if (typeof params[0] === "string" && params[0].includes("multi")) {
+        if (params[0].includes("true")) option.addEventListener("click", chooseMultiOptions);
+        if (params[0].includes("false")) option.addEventListener("click", chooseOption);
+      } else {
+        option.addEventListener("click", chooseOption);
+      }
+
       options.insertAdjacentElement('beforeend', option);
     }
 
+    // validate label
     if (label) {
       placeholder.textContent = label;
+    } else if (params[0].includes("multi")) {
+      if (params[0].includes("true")) placeholder.textContent = "Choose options...";
+      if (params[0].includes("false")) placeholder.textContent = "Choose option...";
     } else {
-      placeholder.textContent = "Placeholder";
+      placeholder.textContent = "Choose option...";
     }
     
     return wrapper;
@@ -83,6 +100,7 @@ function createSelector(searchParam) {
     }
   }
 
+  // single mode
   function chooseOption(event) {
     let wrapper = event.currentTarget.parentElement.parentElement;
     if (!event.currentTarget.parentElement) {
@@ -91,17 +109,44 @@ function createSelector(searchParam) {
                   got ${event.currentTarget.parentElement}`);
     }
 
+    // check for previous selected option
+    let options = wrapper.querySelectorAll(".custom__select__option");
+    for (let item of options) {
+      if (item.dataset.selected == "true") {
+        item.dataset.selected = false;
+      }
+    }
+
     let newElem = document.createElement('div');
 
-    newElem.classList.add('custom__select__placeholder');
+    newElem.classList.add("custom__select__placeholder");
     newElem.textContent = event.currentTarget.textContent;
+    event.currentTarget.dataset.selected = true;
 
-    wrapper.querySelector('.custom__select__placeholder').remove();
+    wrapper.querySelector(".custom__select__placeholder").remove();
     wrapper.insertAdjacentElement('afterbegin', newElem);
-    wrapper.querySelector('.custom__select__options').classList.remove("active");
+    wrapper.querySelector(".custom__select__options").classList.remove("active");
     wrapper.querySelector(".custom__select__options").style.display = "none";
 
     newElem.addEventListener('click', showOptions);
+  }
+
+  // multiple mode
+  function chooseMultiOptions(event) {
+    if (!event.currentTarget.parentElement) {
+      console.log(`selector js, wrong parentElement in showOptions, 
+                  expected custom__select__wrapper, 
+                  got ${event.currentTarget.parentElement}`);
+    }
+
+    if (event.currentTarget.dataset.selected === "true") {
+      event.currentTarget.dataset.selected = false;
+      event.currentTarget.classList.remove("multi__selected");
+    } else {
+      event.currentTarget.dataset.selected = true;
+      event.currentTarget.classList.add("multi__selected");
+    }
+
   }
 }
 
