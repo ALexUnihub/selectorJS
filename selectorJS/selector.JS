@@ -30,7 +30,7 @@ function createSelector(searchParam, ...params) {
         label = null;
       }
 
-      let wrapper = createCustomOption(optionsContent, label, selectorID, params);
+      let wrapper = createCustomWrapper(optionsContent, label, selectorID, params);
       selectorID++;
       item.insertAdjacentElement('afterend', wrapper);
       item.remove();
@@ -38,7 +38,7 @@ function createSelector(searchParam, ...params) {
     }
   }
 
-  function createCustomOption(optionsArr, label, wrapperID, params) {
+  function createCustomWrapper(optionsArr, label, wrapperID, params) {
     let wrapper = document.createElement('div');
     let options = document.createElement('div');
     let placeholder;
@@ -51,6 +51,7 @@ function createSelector(searchParam, ...params) {
 
       // placeholder.addEventListener("focus", showOptions);
       placeholder.addEventListener("click", showOptions);
+      // placeholder.addEventListener("click", test);
       placeholder.addEventListener("input", checkOptions);
     } else {
       placeholder = document.createElement("div");
@@ -170,35 +171,62 @@ function createSelector(searchParam, ...params) {
       event.currentTarget.classList.remove("active");
       wrapper.querySelector(".custom__select__options").style.display = "none";
       inputUnfocus(event);
-      console.log("active");
+      // console.log(event.composedPath());
     } else {
-      console.log("inactive", event.currentTarget);
       event.currentTarget.classList.add("active");
       wrapper.querySelector(".custom__select__options").style.display = "block";
     }
 
+    // переделать !
     inputBlur(event, wrapper);
   }
 
   function inputBlur(event, wrapper) {
-    if (event.currentTarget.classList.contains("input")) {
+    let executeCounter = 0;
+    let currInput;
 
-      let executeCounter = 0;
-      let input = event.currentTarget;
-      document.body.addEventListener("click", blur);
+    for (let item of event.composedPath()) {
+      if (item.classList && item.classList.contains("input") && item.classList.contains("active")) {
+        currInput = item;
+        document.addEventListener("click", blur);
+      }
+    }
 
       function blur(event) {
         executeCounter++;
+        // console.log("click doc");
         if (executeCounter > 1) {
-          if (!event.target.classList.contains("custom__select__option")) {
-            wrapper.querySelector(".custom__select__options").style.display = "none";
-            input.classList.remove("active");
-            document.body.removeEventListener("click", blur);
+          for (let item of event.composedPath()) {
+            if ( (item.classList && item.classList.contains("custom__select__placeholder")) || 
+                  (item.classList && item.classList.contains("custom__select__options")) ||
+                  (item.classList && item.classList.contains("custom__select__option"))) {
+              return;
+            } else if (currInput.classList.contains("active")){
+              // currInput.classList.remove("active");
+              currInput.classList.remove("active");
+              currInput.nextElementSibling.style.display = "none";
+            }
           }
+          console.log("removed");
+          document.removeEventListener("click", blur);
         }
       }
+      // let executeCounter = 0;
+      // let input = event.currentTarget;
+      // document.body.addEventListener("click", blur);
 
-    }
+      // function blur(event) {
+      //   executeCounter++;
+      //   if (executeCounter > 1) {
+      //     if (!event.target.classList.contains("custom__select__option")) {
+      //       input.classList.remove("active");
+      //       wrapper.querySelector(".custom__select__options").style.display = "none";
+      //       document.body.removeEventListener("click", blur);
+      //     }
+      //   }
+      // }
+
+    // }
   }
 
   function inputUnfocus(event) {
@@ -210,4 +238,6 @@ function createSelector(searchParam, ...params) {
     console.log("printing");
   }
 }
+
+
 
