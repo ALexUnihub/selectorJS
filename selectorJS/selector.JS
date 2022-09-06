@@ -1,4 +1,6 @@
 function createSelector(searchParam) {
+  let selectorID = 0;
+  // create & replace all select's with 'searchParam' - selector
   initializeSelector(searchParam);
 
   function initializeSelector(searchParam) {
@@ -23,19 +25,20 @@ function createSelector(searchParam) {
         label = null;
       }
 
-      let wrapper = createCustomOption(optionsContent, label);
-      
+      let wrapper = createCustomOption(optionsContent, label, selectorID);
+      selectorID++;
       item.insertAdjacentElement('afterend', wrapper);
       item.remove();
     }
   }
 
-  function createCustomOption(optionsArr, label) {
+  function createCustomOption(optionsArr, label, wrapperID) {
     let wrapper = document.createElement('div');
     let placeholder = document.createElement('div');
     let options = document.createElement('div');
 
     wrapper.classList.add("custom__select__wrapper");
+    wrapper.id = "customSelector" + wrapperID;
     placeholder.classList.add("custom__select__placeholder");
     options.classList.add("custom__select__options");
 
@@ -64,7 +67,12 @@ function createSelector(searchParam) {
   }
 
   function showOptions(event) {
-    let wrapper = document.querySelector(".custom__select__wrapper");
+    let wrapper = event.currentTarget.parentElement;
+    if (!event.currentTarget.parentElement) {
+      console.log(`selector js, wrong parentElement in showOptions, 
+                  expected custom__select__wrapper, 
+                  got ${event.currentTarget.parentElement}`);
+    }
 
     if (event.currentTarget.classList.contains("active")) {
       event.currentTarget.classList.remove("active");
@@ -75,9 +83,15 @@ function createSelector(searchParam) {
     }
   }
 
-  function chooseOption(event) { 
+  function chooseOption(event) {
+    let wrapper = event.currentTarget.parentElement.parentElement;
+    if (!event.currentTarget.parentElement) {
+      console.log(`selector js, wrong parentElement in showOptions, 
+                  expected custom__select__wrapper, 
+                  got ${event.currentTarget.parentElement}`);
+    }
+
     let newElem = document.createElement('div');
-    let wrapper = document.querySelector(".custom__select__wrapper");
 
     newElem.classList.add('custom__select__placeholder');
     newElem.textContent = event.currentTarget.textContent;
