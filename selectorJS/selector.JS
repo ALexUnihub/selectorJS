@@ -40,8 +40,23 @@ function createSelector(searchParam, ...params) {
 
   function createCustomOption(optionsArr, label, wrapperID, params) {
     let wrapper = document.createElement('div');
-    let placeholder = document.createElement('div');
     let options = document.createElement('div');
+    let placeholder;
+
+    // validate placeholder --> write = true => placeholder = input
+    //                         write = false => placeholder = div
+    if (params[1].includes("write") && params[1].includes("true")) {
+      placeholder = document.createElement("input");
+      placeholder.classList.add("input");
+
+      // placeholder.addEventListener("focus", showOptions);
+      placeholder.addEventListener("click", showOptions);
+      placeholder.addEventListener("input", checkOptions);
+    } else {
+      placeholder = document.createElement("div");
+
+      placeholder.addEventListener("click", showOptions);
+    }
 
     wrapper.classList.add("custom__select__wrapper");
     wrapper.id = "customSelector" + wrapperID;
@@ -50,8 +65,6 @@ function createSelector(searchParam, ...params) {
 
     wrapper.insertAdjacentElement("afterbegin", placeholder);
     placeholder.insertAdjacentElement("afterend", options);
-
-    placeholder.addEventListener("click", showOptions);
 
     for (let i = 0; i < optionsArr.length; i++) {
       let option = document.createElement("div");
@@ -79,28 +92,13 @@ function createSelector(searchParam, ...params) {
     } else {
       placeholder.textContent = "Choose option...";
     }
+
+    if (params[1].includes("write") && params[1].includes("true")) placeholder.placeholder = "Find option...";
     
     return wrapper;
   }
 
-  function showOptions(event) {
-    let wrapper = event.currentTarget.parentElement;
-    if (!event.currentTarget.parentElement) {
-      console.log(`selector js, wrong parentElement in showOptions, 
-                  expected custom__select__wrapper, 
-                  got ${event.currentTarget.parentElement}`);
-    }
-
-    if (event.currentTarget.classList.contains("active")) {
-      event.currentTarget.classList.remove("active");
-      wrapper.querySelector(".custom__select__options").style.display = "none";
-    } else {
-      event.currentTarget.classList.add("active");
-      wrapper.querySelector(".custom__select__options").style.display = "block";
-    }
-  }
-
-  // single mode
+  // multi == false (single mode)
   function chooseOption(event) {
     let wrapper = event.currentTarget.parentElement.parentElement;
     if (!event.currentTarget.parentElement) {
@@ -117,21 +115,31 @@ function createSelector(searchParam, ...params) {
       }
     }
 
-    let newElem = document.createElement('div');
+    // let newElem = document.createElement('div');
+    let input = wrapper.querySelector(".custom__select__placeholder");
+    if (input.classList.contains("input")) {
+      event.currentTarget.dataset.selected = true;
+      input.placeholder = event.currentTarget.textContent;
+      input.classList.remove("active");
 
-    newElem.classList.add("custom__select__placeholder");
-    newElem.textContent = event.currentTarget.textContent;
-    event.currentTarget.dataset.selected = true;
+      wrapper.querySelector(".custom__select__options").classList.remove("active");
+      wrapper.querySelector(".custom__select__options").style.display = "none";
+    } else {
+      let newElem = document.createElement('div');
+      newElem.classList.add("custom__select__placeholder");
+      newElem.textContent = event.currentTarget.textContent;
+      event.currentTarget.dataset.selected = true;
 
-    wrapper.querySelector(".custom__select__placeholder").remove();
-    wrapper.insertAdjacentElement('afterbegin', newElem);
-    wrapper.querySelector(".custom__select__options").classList.remove("active");
-    wrapper.querySelector(".custom__select__options").style.display = "none";
+      wrapper.querySelector(".custom__select__placeholder").remove();
+      wrapper.insertAdjacentElement('afterbegin', newElem);
+      wrapper.querySelector(".custom__select__options").classList.remove("active");
+      wrapper.querySelector(".custom__select__options").style.display = "none";
 
-    newElem.addEventListener('click', showOptions);
+      newElem.addEventListener('click', showOptions);
+    }
   }
 
-  // multiple mode
+  // multi == true (multiple mode)
   function chooseMultiOptions(event) {
     if (!event.currentTarget.parentElement) {
       console.log(`selector js, wrong parentElement in showOptions, 
@@ -147,6 +155,59 @@ function createSelector(searchParam, ...params) {
       event.currentTarget.classList.add("multi__selected");
     }
 
+  }
+
+
+  function showOptions(event) {
+    let wrapper = event.currentTarget.parentElement;
+    if (!event.currentTarget.parentElement) {
+      console.log(`selector js, wrong parentElement in showOptions, 
+                  expected custom__select__wrapper, 
+                  got ${event.currentTarget.parentElement}`);
+    }
+
+    if (event.currentTarget.classList.contains("active")) {
+      event.currentTarget.classList.remove("active");
+      wrapper.querySelector(".custom__select__options").style.display = "none";
+      inputUnfocus(event);
+      console.log("active");
+    } else {
+      console.log("inactive", event.currentTarget);
+      event.currentTarget.classList.add("active");
+      wrapper.querySelector(".custom__select__options").style.display = "block";
+    }
+
+    inputBlur(event, wrapper);
+  }
+
+  function inputBlur(event, wrapper) {
+    if (event.currentTarget.classList.contains("input")) {
+
+      let executeCounter = 0;
+      let input = event.currentTarget;
+      document.body.addEventListener("click", blur);
+
+      function blur(event) {
+        executeCounter++;
+        if (executeCounter > 1) {
+          if (!event.target.classList.contains("custom__select__option")) {
+            wrapper.querySelector(".custom__select__options").style.display = "none";
+            input.classList.remove("active");
+            document.body.removeEventListener("click", blur);
+          }
+        }
+      }
+
+    }
+  }
+
+  function inputUnfocus(event) {
+    if (event.currentTarget.classList.contains("input")) event.currentTarget.blur();
+  }
+
+  // write == true
+  function checkOptions(event) {
+    console.log("printing");
   }
 }
 

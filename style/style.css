@@ -51,6 +51,38 @@ h1,h2,h3,h4,h5,h6,p,td,tr {
 	position: relative;
 }
 
+/* change input placeholder text color */
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+	color:    #000;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+ color:    #000;
+ opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+ color:    #000;
+ opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+ color:    #000;
+}
+::-ms-input-placeholder { /* Microsoft Edge */
+ color:    #000;
+}
+
+::placeholder { /* Most modern browsers support this now. */
+ color:    #000;
+}
+.custom__select__placeholder.input {
+	outline: none;
+	outline-offset: 0;
+
+	transition: all 0.2s linear;
+}
+.custom__select__placeholder.input:hover {
+	cursor: text;
+	/* border: 2px solid #000; */
+}
 .custom__select__placeholder:hover {
 	cursor: pointer;
 }
@@ -158,15 +190,3 @@ background-color: rgb(0, 0, 0);
 	right: 25px;
 	position: absolute;
 }
-
-
-/* test */
-.label__test {
-	display: block;
-}
-.select__block {
-	display: block;
-}
-/* .select__block {
-	margin-top: 500px;
-} */
