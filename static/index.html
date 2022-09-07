@@ -77,9 +77,21 @@
 
 
   <script>
-    window.createSelector(".select__block__single", "multi= false", "write=false")
-    window.createSelector(".select__block", "multi= true", "write=false");
-    window.createSelector(".select__block__input", "multi= true", "write=true");
+    // window.createSelector(".select__block__single", "multi= false", "write=false")
+    // window.createSelector(".select__block", "multi= true", "write=false");
+    // window.createSelector(".select__block__input", "multi= true", "write=true");
+    window.createSelector(".select__block__single", {
+      "multi": false,
+      "write": false,
+    })
+    window.createSelector(".select__block", {
+      "multi": true,
+      "write": false,
+    });
+    window.createSelector(".select__block__input", {
+      "multi": true,
+      "write": true,
+    });
   </script>
 </body>
 </html>

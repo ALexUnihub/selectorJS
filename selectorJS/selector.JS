@@ -2,11 +2,11 @@
 // write=true --> can write in input
 // single mode is default
 
-function createSelector(searchParam, ...params) {
+function createSelector(searchParam, paramsObj) {
 
   let selectorID = 0;
   // create & replace all select's with 'searchParam' - selector
-  initializeSelector(searchParam, params);
+  initializeSelector(searchParam, paramsObj);
 
   function initializeSelector(searchParam) {
     let optionsToReplace = document.querySelectorAll(searchParam);
@@ -30,7 +30,7 @@ function createSelector(searchParam, ...params) {
         label = null;
       }
 
-      let wrapper = createCustomWrapper(optionsContent, label, selectorID, params);
+      let wrapper = createCustomWrapper(optionsContent, label, selectorID, paramsObj);
       selectorID++;
       item.insertAdjacentElement('afterend', wrapper);
       item.remove();
@@ -38,14 +38,15 @@ function createSelector(searchParam, ...params) {
     }
   }
 
-  function createCustomWrapper(optionsArr, label, wrapperID, params) {
+  function createCustomWrapper(optionsArr, label, wrapperID, paramsObj) {
     let wrapper = document.createElement('div');
     let options = document.createElement('div');
     let placeholder;
 
     // validate placeholder --> write = true => placeholder = input
     //                         write = false => placeholder = div
-    if (params[1].includes("write") && params[1].includes("true")) {
+    // if (params[1].includes("write") && params[1].includes("true")) {
+    if (paramsObj["write"]) {
       placeholder = document.createElement("input");
       placeholder.classList.add("input");
 
@@ -72,9 +73,9 @@ function createSelector(searchParam, ...params) {
       option.dataset.selected = false;
       option.textContent = optionsArr[i];
 
-      if (typeof params[0] === "string" && params[0].includes("multi")) {
-        if (params[0].includes("true")) option.addEventListener("click", chooseMultiOptions);
-        if (params[0].includes("false")) option.addEventListener("click", chooseOption);
+      if ("multi" in paramsObj) {
+        if (paramsObj["multi"] == true) option.addEventListener("click", chooseMultiOptions);
+        if (paramsObj["multi"] == false) option.addEventListener("click", chooseOption);
       } else {
         option.addEventListener("click", chooseOption);
       }
@@ -85,14 +86,14 @@ function createSelector(searchParam, ...params) {
     // validate label
     if (label) {
       placeholder.textContent = label;
-    } else if (params[0].includes("multi")) {
-      if (params[0].includes("true")) placeholder.textContent = "Choose options...";
-      if (params[0].includes("false")) placeholder.textContent = "Choose option...";
+    } else if ("multi" in paramsObj) {
+      if (paramsObj["multi"] == true) placeholder.textContent = "Choose options...";
+      if (paramsObj["multi"] == false) placeholder.textContent = "Choose option...";
     } else {
       placeholder.textContent = "Choose option...";
     }
 
-    if (params[1].includes("write") && params[1].includes("true")) placeholder.placeholder = "Find option...";
+    if (paramsObj["write"] == true) placeholder.placeholder = "Find option...";
     
     return wrapper;
   }
@@ -114,7 +115,6 @@ function createSelector(searchParam, ...params) {
       }
     }
 
-    // let newElem = document.createElement('div');
     let input = wrapper.querySelector(".custom__select__placeholder");
     if (input.classList.contains("input")) {
       event.currentTarget.dataset.selected = true;
@@ -231,12 +231,9 @@ function createSelector(searchParam, ...params) {
     if (event.currentTarget.parentElement) wrapper = event.currentTarget.parentElement;
     if (wrapper) {
       let optionArr = wrapper.querySelectorAll(".custom__select__option");
-      // let input = wrapper.querySelector(".input");
-      
-      // if (event.currentTarget.input)
+
       for (let item of optionArr) {
         if (!item.textContent.toLowerCase().includes(event.currentTarget.value)) {
-          // console.log(item.textContent, event.currentTarget.value);
           item.style.display = "none";
         } else {
           item.style.display = "flex";
