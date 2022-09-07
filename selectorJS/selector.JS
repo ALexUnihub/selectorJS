@@ -49,10 +49,8 @@ function createSelector(searchParam, ...params) {
       placeholder = document.createElement("input");
       placeholder.classList.add("input");
 
-      // placeholder.addEventListener("focus", showOptions);
       placeholder.addEventListener("click", showOptions);
-      // placeholder.addEventListener("click", test);
-      placeholder.addEventListener("input", checkOptions);
+      placeholder.addEventListener("input", searchOption);
     } else {
       placeholder = document.createElement("div");
 
@@ -160,82 +158,91 @@ function createSelector(searchParam, ...params) {
 
 
   function showOptions(event) {
-    let wrapper = event.currentTarget.parentElement;
     if (!event.currentTarget.parentElement) {
       console.log(`selector js, wrong parentElement in showOptions, 
                   expected custom__select__wrapper, 
                   got ${event.currentTarget.parentElement}`);
     }
+    let wrapper = event.currentTarget.parentElement;
 
     if (event.currentTarget.classList.contains("active")) {
       event.currentTarget.classList.remove("active");
       wrapper.querySelector(".custom__select__options").style.display = "none";
       inputUnfocus(event);
-      // console.log(event.composedPath());
     } else {
       event.currentTarget.classList.add("active");
       wrapper.querySelector(".custom__select__options").style.display = "block";
     }
 
-    // переделать !
-    inputBlur(event, wrapper);
+    inputCloseOptionsBar(event);
   }
 
-  function inputBlur(event, wrapper) {
+  function inputCloseOptionsBar(event) {
     let executeCounter = 0;
     let currInput;
+    let currID = 0;
 
     for (let item of event.composedPath()) {
       if (item.classList && item.classList.contains("input") && item.classList.contains("active")) {
         currInput = item;
+        currID = item.parentElement.id;
+
         document.addEventListener("click", blur);
       }
     }
 
       function blur(event) {
         executeCounter++;
-        // console.log("click doc");
         if (executeCounter > 1) {
           for (let item of event.composedPath()) {
-            if ( (item.classList && item.classList.contains("custom__select__placeholder")) || 
-                  (item.classList && item.classList.contains("custom__select__options")) ||
-                  (item.classList && item.classList.contains("custom__select__option"))) {
+            if ( checkItemClassList(item, currID)) {
               return;
             } else if (currInput.classList.contains("active")){
-              // currInput.classList.remove("active");
               currInput.classList.remove("active");
               currInput.nextElementSibling.style.display = "none";
             }
           }
-          console.log("removed");
           document.removeEventListener("click", blur);
         }
       }
-      // let executeCounter = 0;
-      // let input = event.currentTarget;
-      // document.body.addEventListener("click", blur);
-
-      // function blur(event) {
-      //   executeCounter++;
-      //   if (executeCounter > 1) {
-      //     if (!event.target.classList.contains("custom__select__option")) {
-      //       input.classList.remove("active");
-      //       wrapper.querySelector(".custom__select__options").style.display = "none";
-      //       document.body.removeEventListener("click", blur);
-      //     }
-      //   }
-      // }
-
-    // }
   }
 
   function inputUnfocus(event) {
     if (event.currentTarget.classList.contains("input")) event.currentTarget.blur();
   }
 
+  function checkItemClassList(item, wrapperID) {
+    let isInput = item.classList && item.classList.contains("custom__select__placeholder") && item.classList.contains("input");
+    let isOptions = item.classList && item.classList.contains("custom__select__placeholder") && item.classList.contains("input");
+    let isOption = item.classList && item.classList.contains("custom__select__option");
+
+    if (isInput && item.parentElement && item.parentElement.id) {
+      isInput = (item.parentElement.id === wrapperID);
+      return isInput;
+    }
+
+    return isInput || isOptions || isOption;
+  }
+
   // write == true
-  function checkOptions(event) {
-    console.log("printing");
+  function searchOption(event) {
+    let wrapper = null;
+
+    if (event.currentTarget.parentElement) wrapper = event.currentTarget.parentElement;
+    if (wrapper) {
+      let optionArr = wrapper.querySelectorAll(".custom__select__option");
+      // let input = wrapper.querySelector(".input");
+      
+      // if (event.currentTarget.input)
+      for (let item of optionArr) {
+        if (!item.textContent.toLowerCase().includes(event.currentTarget.value)) {
+          // console.log(item.textContent, event.currentTarget.value);
+          item.style.display = "none";
+        } else {
+          item.style.display = "flex";
+        }
+      }
+    }
   }
 }
 
