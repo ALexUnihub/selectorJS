@@ -28,7 +28,10 @@ h1,h2,h3,h4,h5,h6,p,td,tr {
 	margin: 0 auto;
 	margin-top: 150px;
 }
-
+.wrapper.test {
+	margin: 0;
+	height: 250px;
+}
 
 
 /* Custom select */
@@ -53,25 +56,25 @@ h1,h2,h3,h4,h5,h6,p,td,tr {
 
 /* change input placeholder text color */
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-	color:    #000;
+	color:    #808080;
 }
 :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
- color:    #000;
+ color:    #808080;
  opacity:  1;
 }
 ::-moz-placeholder { /* Mozilla Firefox 19+ */
- color:    #000;
+ color:    #808080;
  opacity:  1;
 }
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
- color:    #000;
+ color:    #808080;
 }
 ::-ms-input-placeholder { /* Microsoft Edge */
- color:    #000;
+ color:    #808080;
 }
 
 ::placeholder { /* Most modern browsers support this now. */
- color:    #000;
+ color:    #808080;
 }
 .custom__select__placeholder.input {
 	outline: none;
@@ -178,11 +181,11 @@ background-color: rgb(0, 0, 0);
 .custom__select__option:last-child::after {
 	display: none;
 }
+.custom__select__option.single__selected::before,
 .custom__select__option.multi__selected::before {
 	content: "";
 	width: 8px;
 	height: 4px;
-	/* background-color: red; */
 
 	border-left: 2px solid #000;
 	border-bottom: 2px solid #000;
@@ -191,9 +194,11 @@ background-color: rgb(0, 0, 0);
 	right: 25px;
 	position: absolute;
 }
-
-
-.wrapper.test {
-	margin: 0;
-
+.custom__select__option.no__matches {
+	color: #808080;
 }
+.custom__select__option.no__matches:hover {
+	cursor: alias;
+}
+
+

@@ -5,6 +5,8 @@
 function createSelector(searchParam, paramsObj) {
 
   let selectorID = 0;
+  let isOptionClicked = false;
+
   // create & replace all select's with 'searchParam' - selector
   initializeSelector(searchParam, paramsObj);
 
@@ -45,13 +47,14 @@ function createSelector(searchParam, paramsObj) {
 
     // validate placeholder --> write = true => placeholder = input
     //                         write = false => placeholder = div
-    // if (params[1].includes("write") && params[1].includes("true")) {
     if (paramsObj["write"]) {
       placeholder = document.createElement("input");
       placeholder.classList.add("input");
 
-      placeholder.addEventListener("click", showOptions);
-      placeholder.addEventListener("input", searchOption);
+      let wrapperSearchOption = searchOptionWrapper(paramsObj["multi"]);
+
+      placeholder.addEventListener("click", showOptionsInput);
+      placeholder.addEventListener("input", wrapperSearchOption);
     } else {
       placeholder = document.createElement("div");
 
@@ -67,6 +70,7 @@ function createSelector(searchParam, paramsObj) {
     placeholder.insertAdjacentElement("afterend", options);
 
     for (let i = 0; i < optionsArr.length; i++) {
+
       let option = document.createElement("div");
 
       option.classList.add("custom__select__option");
@@ -109,24 +113,38 @@ function createSelector(searchParam, paramsObj) {
 
     // check for previous selected option
     let options = wrapper.querySelectorAll(".custom__select__option");
+
     for (let item of options) {
+
       if (item.dataset.selected == "true") {
         item.dataset.selected = false;
       }
+
+      if (item.classList.contains("single__selected")) {
+        item.classList.remove("single__selected");
+      }
+
     }
 
     let input = wrapper.querySelector(".custom__select__placeholder");
+
     if (input.classList.contains("input")) {
+
       event.currentTarget.dataset.selected = true;
+      event.currentTarget.classList.add("single__selected");
+
       input.placeholder = event.currentTarget.textContent;
       input.classList.remove("active");
 
       wrapper.querySelector(".custom__select__options").classList.remove("active");
       wrapper.querySelector(".custom__select__options").style.display = "none";
+
     } else {
       let newElem = document.createElement('div');
+
       newElem.classList.add("custom__select__placeholder");
       newElem.textContent = event.currentTarget.textContent;
+
       event.currentTarget.dataset.selected = true;
 
       wrapper.querySelector(".custom__select__placeholder").remove();
@@ -153,7 +171,6 @@ function createSelector(searchParam, paramsObj) {
       event.currentTarget.dataset.selected = true;
       event.currentTarget.classList.add("multi__selected");
     }
-
   }
 
 
@@ -163,13 +180,29 @@ function createSelector(searchParam, paramsObj) {
                   expected custom__select__wrapper, 
                   got ${event.currentTarget.parentElement}`);
     }
+
     let wrapper = event.currentTarget.parentElement;
 
     if (event.currentTarget.classList.contains("active")) {
       event.currentTarget.classList.remove("active");
       wrapper.querySelector(".custom__select__options").style.display = "none";
-      inputUnfocus(event);
     } else {
+      event.currentTarget.classList.add("active");
+      wrapper.querySelector(".custom__select__options").style.display = "block";
+    }
+  }
+
+  // write == true
+  function showOptionsInput(event) {
+    if (!event.currentTarget.parentElement) {
+      console.log(`selector js, wrong parentElement in showOptions, 
+                  expected custom__select__wrapper, 
+                  got ${event.currentTarget.parentElement}`);
+    }
+
+    let wrapper = event.currentTarget.parentElement;
+
+    if (!event.currentTarget.classList.contains("active")) {
       event.currentTarget.classList.add("active");
       wrapper.querySelector(".custom__select__options").style.display = "block";
     }
@@ -207,10 +240,6 @@ function createSelector(searchParam, paramsObj) {
       }
   }
 
-  function inputUnfocus(event) {
-    if (event.currentTarget.classList.contains("input")) event.currentTarget.blur();
-  }
-
   function checkItemClassList(item, wrapperID) {
     let isInput = item.classList && item.classList.contains("custom__select__placeholder") && item.classList.contains("input");
     let isOptions = item.classList && item.classList.contains("custom__select__placeholder") && item.classList.contains("input");
@@ -224,23 +253,62 @@ function createSelector(searchParam, paramsObj) {
     return isInput || isOptions || isOption;
   }
 
-  // write == true
-  function searchOption(event) {
-    let wrapper = null;
+  function searchOptionWrapper(isMulti) {
+    let optionsArr = [];
+    let prevStr = "";
+    let prevStrLength = 0;
 
-    if (event.currentTarget.parentElement) wrapper = event.currentTarget.parentElement;
-    if (wrapper) {
-      let optionArr = wrapper.querySelectorAll(".custom__select__option");
+    return function (event) {
+      let wrapper = null;
+  
+      if (!event.currentTarget.parentElement) return;
 
-      for (let item of optionArr) {
-        if (!item.textContent.toLowerCase().includes(event.currentTarget.value)) {
-          item.style.display = "none";
-        } else {
-          item.style.display = "flex";
-        }
+      wrapper = event.currentTarget.parentElement;
+
+      let currOptionsArr = Array.from(wrapper.querySelectorAll(".custom__select__option"));
+      let currStr = event.currentTarget.value;
+      let selectedElemText = null;
+
+      if (optionsArr.length === 0) {
+        optionsArr = currOptionsArr.map(item => item);
       }
+
+      for (let item of currOptionsArr) {
+        if (item.dataset.selected === "true") selectedElemText = item.textContent;
+      }
+
+      redrawElems(wrapper.querySelector(".custom__select__options"), optionsArr, isMulti, selectedElemText, currStr);
+
+      prevStr = currStr;
+      prevStrLength = currStr.length;
+    };
+  }
+
+  function redrawElems(wrapper, objArr, isMulti, selectedElemText, currStr) {
+    let wrapperCollection = wrapper.querySelectorAll(".custom__select__option");
+
+    for (let item of wrapperCollection) item.remove();
+
+    for (let item of objArr) {
+
+      if (!isMulti && item.textContent !== selectedElemText) {
+        if (item.classList.contains("single__selected")) item.classList.remove("single__selected");
+        item.dataset.selected = false;
+      }
+
+      if (item.textContent.includes(currStr)) wrapper.insertAdjacentElement("beforeend", item);
     }
   }
+
+  // function createNoMatchesElem() {
+  //   let elem = document.createElement("div");
+
+  //   elem.classList.add("custom__select__option");
+  //   elem.classList.add("no__matches");
+    
+
+  //   return elem;
+  // }
 }
 
 

@@ -74,12 +74,23 @@
 
       
   </div>
+  
+  <div class="wrapper test">
+
+    <!-- <label for="" class="label__test">SomeLabel</label> -->
+    <select name="" id="custom-wrapper" class="select__block__input__single">
+      <option value="">a</option>
+      <option value="">ab</option>
+      <option value="">abc</option>
+      <option value="">c</option>
+      <option value="">bc</option>
+    </select>
+
+      
+  </div>
 
 
   <script>
-    // window.createSelector(".select__block__single", "multi= false", "write=false")
-    // window.createSelector(".select__block", "multi= true", "write=false");
-    // window.createSelector(".select__block__input", "multi= true", "write=true");
     window.createSelector(".select__block__single", {
       "multi": false,
       "write": false,
@@ -90,6 +101,10 @@
     });
     window.createSelector(".select__block__input", {
       "multi": true,
+      "write": true,
+    });
+    window.createSelector(".select__block__input__single", {
+      "multi": false,
       "write": true,
     });
   </script>
