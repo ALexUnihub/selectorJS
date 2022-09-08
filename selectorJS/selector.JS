@@ -257,6 +257,7 @@ function createSelector(searchParam, paramsObj) {
     let optionsArr = [];
     let prevStr = "";
     let prevStrLength = 0;
+    let selectedElemText = null;
 
     return function (event) {
       let wrapper = null;
@@ -267,8 +268,7 @@ function createSelector(searchParam, paramsObj) {
 
       let currOptionsArr = Array.from(wrapper.querySelectorAll(".custom__select__option"));
       let currStr = event.currentTarget.value;
-      let selectedElemText = null;
-
+    
       if (optionsArr.length === 0) {
         optionsArr = currOptionsArr.map(item => item);
       }
@@ -298,17 +298,27 @@ function createSelector(searchParam, paramsObj) {
 
       if (item.textContent.includes(currStr)) wrapper.insertAdjacentElement("beforeend", item);
     }
+
+    wrapperCollection = wrapper.querySelectorAll(".custom__select__option");
+
+    if (Array.from(wrapperCollection).length === 0) {
+
+      let noMatchesElem = createNoMatchesElem();
+      wrapper.insertAdjacentElement("beforeend", noMatchesElem);
+
+      return;
+    }
   }
 
-  // function createNoMatchesElem() {
-  //   let elem = document.createElement("div");
+  function createNoMatchesElem() {
+    let elem = document.createElement("div");
 
-  //   elem.classList.add("custom__select__option");
-  //   elem.classList.add("no__matches");
+    elem.classList.add("custom__select__option");
+    elem.classList.add("no__matches");
+    elem.textContent = "No matches found..."
     
-
-  //   return elem;
-  // }
+    return elem;
+  }
 }
 
 
