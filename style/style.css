@@ -20,17 +20,24 @@ h1,h2,h3,h4,h5,h6,p,td,tr {
 }
 
 
-/* Position */
-.wrapper {
-	width: 800px;
-	height: 500px;
+/* Layout */
+.wrapper__show {
+	padding-top: 350px;
+	box-sizing: border-box;
+
+	width: 100%;
+	height: 969px;
+
+	background-color: rgba(0, 102, 255, 0.5);
+}
+.container {
+	width: 80%;
+	max-width: 1200px;
 
 	margin: 0 auto;
-	margin-top: 150px;
-}
-.wrapper.test {
-	margin: 0;
-	height: 250px;
+
+	display: flex;
+	justify-content: space-between;
 }
 
 
@@ -52,6 +59,8 @@ h1,h2,h3,h4,h5,h6,p,td,tr {
 	border: 1px solid #000;
 	border-radius: 8px;
 	position: relative;
+	color: #000;
+	background-color: #fff;
 }
 
 /* change input placeholder text color */

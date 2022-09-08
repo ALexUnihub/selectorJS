@@ -12,81 +12,66 @@
 </head>
 <body>
   
-  <div class="wrapper">
+  <div class="wrapper__show">
 
-    <!-- <div class="custom__select__wrapper">
+    <div class="container">
 
-      <div class="custom__select__placeholder">Placeholder</div>
+      <div class="block__single">
+        
+        <label for="" class="label__test">Choose single option</label>
+        <select name="" id="custom-wrapper" class="select__block__single">
+          <option value="">Option 1</option>
+          <option value="">Option 2</option>
+          <option value="">Option 3</option>
+          <option value="">Option 4</option>
+        </select>
 
-      <div class="custom__select__options">
-        <div class="custom__select__option">Option 1</div>
-        <div class="custom__select__option">Option 2</div>
-        <div class="custom__select__option">Option 3</div>
-        <div class="custom__select__option">Option 4</div>
-        <div class="custom__select__option">Option 5</div>
-        </div>
       </div>
 
-    </div> -->
+      <div class="block__multi">
 
-    <!-- <label for="" class="label__test">SomeLabel</label> -->
-    <select name="" id="custom-wrapper" class="select__block__single">
-      <option value="">Option 1</option>
-      <option value="">Option 2</option>
-      <option value="">Option 3</option>
-      <option value="">Option 4</option>
-    </select>
+        <label for="" class="label__test">Choose multiple options</label>
+        <select name="" id="custom-wrapper" class="select__block__multi">
+          <option value="">Option 5</option>
+          <option value="">Option 6</option>
+          <option value="">Option 7</option>
+          <option value="">Option 8</option>
+          <option value="">Option 9</option>
+          <option value="">Option 10</option>
+          <option value="">Option 11</option>
+        </select>
 
-      
-  </div>
-  
-  <div class="wrapper">
+      </div>
 
-    <label for="" class="label__test">SomeLabel</label>
-    <select name="" id="custom-wrapper" class="select__block">
-      <option value="">Option 5</option>
-      <option value="">Option 6</option>
-      <option value="">Option 7</option>
-      <option value="">Option 8</option>
-    </select>
+      <div class="block__single__write">
 
-    <!-- <label for="" class="label__test">SomeLabel</label> -->
-    <select name="" id="custom-wrapper" class="select__block__input">
-      <option value="">Option 11</option>
-      <option value="">Option 21</option>
-      <option value="">Option 31</option>
-      <option value="">Option 41</option>
-    </select>
+        <label for="" class="label__test">Choose single option & search for it</label>
+        <select name="" id="custom-wrapper" class="select__block__single__write">
+          <option value="">S</option>
+          <option value="">Sea</option>
+          <option value="">Search</option>
+          <option value="">Search for</option>
+          <option value="">Search for option</option>
+        </select>
 
-      
-  </div>
-  
-  <div class="wrapper test">
+      </div>
 
-    <!-- <label for="" class="label__test">SomeLabel</label> -->
-    <select name="" id="custom-wrapper" class="select__block__input">
-      <option value="">a</option>
-      <option value="">ab</option>
-      <option value="">abc</option>
-      <option value="">c</option>
-      <option value="">bc</option>
-    </select>
+      <div class="block__multi__write">
 
-      
-  </div>
-  
-  <div class="wrapper test">
+        <label for="" class="label__test">Choose multiple options & search for it</label>
+        <select name="" id="custom-wrapper" class="select__block__multi__write">
+          <option value="">S</option>
+          <option value="">Sea</option>
+          <option value="">Search</option>
+          <option value="">Search for</option>
+          <option value="">Search for multiple</option>
+          <option value="">Search for multiple options</option>
+        </select>
 
-    <!-- <label for="" class="label__test">SomeLabel</label> -->
-    <select name="" id="custom-wrapper" class="select__block__input__single">
-      <option value="">a</option>
-      <option value="">ab</option>
-      <option value="">abc</option>
-      <option value="">c</option>
-      <option value="">bc</option>
-    </select>
+      </div>
 
-      
+    </div>
+
   </div>
 
 
@@ -95,15 +80,15 @@
       "multi": false,
       "write": false,
     })
-    window.createSelector(".select__block", {
+    window.createSelector(".select__block__multi", {
       "multi": true,
       "write": false,
     });
-    window.createSelector(".select__block__input", {
+    window.createSelector(".select__block__multi__write", {
       "multi": true,
       "write": true,
     });
-    window.createSelector(".select__block__input__single", {
+    window.createSelector(".select__block__single__write", {
       "multi": false,
       "write": true,
     });

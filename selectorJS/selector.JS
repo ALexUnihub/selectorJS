@@ -2,10 +2,12 @@
 // write=true --> can write in input
 // single mode is default
 
-function createSelector(searchParam, paramsObj) {
+function createSelector(searchParam, paramsObj = {
+  "multi": false,
+  "write": false,
+}) {
 
   let selectorID = 0;
-  let isOptionClicked = false;
 
   // create & replace all select's with 'searchParam' - selector
   initializeSelector(searchParam, paramsObj);
@@ -19,12 +21,14 @@ function createSelector(searchParam, paramsObj) {
     for (let item of optionsToReplace) {
       optionsCounter = 0;
       for (let subItem of item.childNodes) {
+
         if (subItem == '[object HTMLOptionElement]') {
           optionsCounter++;
           optionsContent.push(subItem.textContent);
         }
+
       }
-    
+      
       if (item.previousElementSibling == "[object HTMLLabelElement]") {
         label = item.previousElementSibling.textContent;
         item.previousElementSibling.remove();
@@ -97,7 +101,8 @@ function createSelector(searchParam, paramsObj) {
       placeholder.textContent = "Choose option...";
     }
 
-    if (paramsObj["write"] == true) placeholder.placeholder = "Find option...";
+    if (paramsObj["write"] == true && !paramsObj["multi"]) placeholder.placeholder = "Find option...";
+    if (paramsObj["write"] == true && paramsObj["multi"]) placeholder.placeholder = "Find options...";
     
     return wrapper;
   }
@@ -296,7 +301,7 @@ function createSelector(searchParam, paramsObj) {
         item.dataset.selected = false;
       }
 
-      if (item.textContent.includes(currStr)) wrapper.insertAdjacentElement("beforeend", item);
+      if (item.textContent.toLowerCase().includes(currStr.toLowerCase())) wrapper.insertAdjacentElement("beforeend", item);
     }
 
     wrapperCollection = wrapper.querySelectorAll(".custom__select__option");
